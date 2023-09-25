@@ -1,5 +1,0 @@
-/mnt/c/Users/benny/Desktop/ECT/4º Ano/1 Semestre/IC/IC_Project/sndfile-example-src/build/CMakeFiles/rebuild_cache.dir
-/mnt/c/Users/benny/Desktop/ECT/4º Ano/1 Semestre/IC/IC_Project/sndfile-example-src/build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/benny/Desktop/ECT/4º Ano/1 Semestre/IC/IC_Project/sndfile-example-src/build/CMakeFiles/wav_dct.dir
-/mnt/c/Users/benny/Desktop/ECT/4º Ano/1 Semestre/IC/IC_Project/sndfile-example-src/build/CMakeFiles/wav_hist.dir
-/mnt/c/Users/benny/Desktop/ECT/4º Ano/1 Semestre/IC/IC_Project/sndfile-example-src/build/CMakeFiles/wav_cp.dir
