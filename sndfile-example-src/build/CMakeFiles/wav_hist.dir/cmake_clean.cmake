@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/mnt/c/Users/benny/Desktop/ECT/4º Ano/IC/final_project/sndfile-example-bin/wav_hist"
-  "/mnt/c/Users/benny/Desktop/ECT/4º Ano/IC/final_project/sndfile-example-bin/wav_hist.pdb"
+  "/mnt/c/Users/benny/Desktop/ECT/4º Ano/1 Semestre/IC/IC_Project/sndfile-example-bin/wav_hist"
+  "/mnt/c/Users/benny/Desktop/ECT/4º Ano/1 Semestre/IC/IC_Project/sndfile-example-bin/wav_hist.pdb"
   "CMakeFiles/wav_hist.dir/wav_hist.cpp.o"
 )
 
