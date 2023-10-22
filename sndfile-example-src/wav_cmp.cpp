@@ -53,29 +53,33 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    vector<short> samples_f1(FRAMES_BUFFER_SIZE * sfhIn1.channels());
-    vector<short> samples_f2(FRAMES_BUFFER_SIZE * sfhIn2.channels());
+    vector<short> samples1(FRAMES_BUFFER_SIZE * sfhIn1.channels());
 
-    size_t nFrames;
-    double energy_signal { 0 };
-    double energy_noise { 0 };
-    double max_error { 0 };
+    vector<short> samples2(FRAMES_BUFFER_SIZE * sfhIn2.channels());
+
+    size_t numberFrames;
+    double sinal { 0 };
+    double noise { 0 };
+    double error { 0 };
     double snr { 0 };
 
-    while((nFrames = sfhIn1.readf(samples_f1.data(), FRAMES_BUFFER_SIZE))) {
-        sfhIn2.readf(samples_f2.data(), FRAMES_BUFFER_SIZE);
+    while((numberFrames = sfhIn1.readf(samples1.data(), FRAMES_BUFFER_SIZE))) {
+        sfhIn2.readf(samples2.data(), FRAMES_BUFFER_SIZE);
 
-        samples_f1.resize(nFrames * sfhIn1.channels());
-        samples_f2.resize(nFrames * sfhIn2.channels());
+        samples1.resize(numberFrames * sfhIn1.channels());
 
-        for (long unsigned int i = 0; i < samples_f1.size(); i++) {
-            energy_signal += abs(samples_f1[i])^2;
-            energy_noise += abs(samples_f1[i] - samples_f2[i])^2;
-            max_error = abs(samples_f1[i] - samples_f2[i]) > max_error ? abs(samples_f1[i] - samples_f2[i]) : max_error;
+        samples2.resize(numberFrames * sfhIn2.channels());
+
+        for (long unsigned int i = 0; i < samples1.size(); i++) {
+            sinal += abs(samples1[i])^2;
+            noise += abs(samples1[i] - samples2[i])^2;
+            error = abs(samples1[i] - samples2[i]) > error ? abs(samples1[i] - samples2[i]) : error;
         }    
     }
 
-    snr = 10 * log10(energy_signal / energy_noise);
+    snr = 10 * log10(sinal / noise);
+
     cout << "SNR: " << snr << " dB" << endl;
-    cout << "Maximum Absolute Error: " << max_error << endl;
+
+    cout << "Maximum Absolute Error: " << error << endl;
 }

@@ -37,22 +37,22 @@ int main(int argc, char *argv[]) {
 		return 1;
     }
 
-    int bits_to_keep { stoi(argv[argc-2]) };
+    int leftbits { stoi(argv[argc-2]) };
 
-    if (bits_to_keep < 1 || bits_to_keep > 16) {
+    if (leftbits < 1 || leftbits > 16) {
         cerr << "Error: invalid number of bits to keep\n";
         return 1;
     }
 
-    size_t num_bits_to_cut = 16 - bits_to_keep;
+    size_t bits = 16 - leftbits;
     vector<short> samples(FRAMES_BUFFER_SIZE * sfhIn.channels());
-    WAVQuant quant { };
+    WAVQuant wavquant { };
 
-    size_t nFrames;
-    while((nFrames = sfhIn.readf(samples.data(), FRAMES_BUFFER_SIZE))) {
-        samples.resize(nFrames * sfhIn.channels());
-        quant.quant(samples, num_bits_to_cut);
+    size_t framesps;
+    while((framesps = sfhIn.readf(samples.data(), FRAMES_BUFFER_SIZE))) {
+        samples.resize(framesps * sfhIn.channels());
+        wavquant.quant(samples, bits);
     }
 
-    quant.toFile(sfhOut);
+    wavquant.toFile(sfhOut);
 }

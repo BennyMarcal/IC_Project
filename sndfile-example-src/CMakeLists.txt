@@ -23,6 +23,15 @@ target_link_libraries (decoder sndfile)
 add_executable (encoder encoder.cpp)
 target_link_libraries (encoder sndfile)
 
+add_executable (decoder_loss decoder_loss.cpp)
+target_link_libraries (decoder_loss sndfile)
+target_link_libraries(decoder_loss fftw3)
+
+add_executable (encoder_loss encoder_loss.cpp)
+target_link_libraries (encoder_loss sndfile)
+target_link_libraries(encoder_loss fftw3)
+
+
 add_executable (wav_dct wav_dct.cpp)
 target_link_libraries (wav_dct sndfile fftw3)
 

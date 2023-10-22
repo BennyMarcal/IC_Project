@@ -7,8 +7,8 @@
 class BitStream {
 private:
     std::fstream file;
-    std::string fileMode;
-    std::string fileName;
+    std::string modef;
+    std::string namef;
     int fileSize;
     std::vector<int> bitArray;
     int currentBitPos;
@@ -16,15 +16,15 @@ private:
 
 public:
     BitStream(std::string name, std::string mode) {
-        fileName = name;
-        fileMode = mode;
+        namef = name;
+        modef = mode;
 
         if (mode == "r") {
-            file.open(fileName, std::ios::in | std::ios::binary);
+            file.open(namef, std::ios::in | std::ios::binary);
             currentBitPos = 0;
             fileSize = getFileSize();
         } else if (mode == "w") {
-            file.open(fileName, std::ios::out | std::ios::binary | std::ios::trunc);
+            file.open(namef, std::ios::out | std::ios::binary | std::ios::trunc);
             currentBitPos = 0;
             currentArrayPos = 0;
         } else {
@@ -34,7 +34,7 @@ public:
 
     int getFileSize() {
         std::fstream file2;
-        file2.open(fileName, std::ios::in | std::ios::binary);
+        file2.open(namef, std::ios::in | std::ios::binary);
         file2.seekg(0, std::ios::end);
         int size = file2.tellg();
         file2.seekg(0, std::ios::beg);
@@ -59,7 +59,7 @@ public:
     }
 
     std::vector<int> readBits(int n) {
-        if (fileMode != "r") {
+        if (modef != "r") {
             std::cout << "File not open for reading" << std::endl;
             return std::vector<int>();
         }
@@ -82,7 +82,7 @@ public:
     }
 
     int readBit() {
-        if (fileMode != "r") {
+        if (modef != "r") {
             std::cout << "File not open for reading" << std::endl;
             return -1;
         }
@@ -100,7 +100,7 @@ public:
     }
 
     void writeBits(std::vector<int> bits) {
-        if (fileMode != "w") {
+        if (modef != "w") {
             std::cout << "File is not open for writing" << std::endl;
             return;
         }
@@ -120,7 +120,7 @@ public:
     }
 
     void writeBit(int bit) {
-        if (fileMode != "w") {
+        if (modef != "w") {
             std::cout << "File is not open for writing" << std::endl;
             return;
         }

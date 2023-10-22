@@ -37,7 +37,7 @@ int main (int argc, char *argv[]) {
     //write the bits to the output file
     vector<int> bits;
     for (int i = 0; i < line.length(); i++){
-        bits.push_back(line[i] - '0');
+        bits.push_back(line[i]);
     }
     outputFile.writeBits(bits);
     outputFile.close();
