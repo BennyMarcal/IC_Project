@@ -14,3 +14,7 @@
 	Part 2:
 		./decoder imputfile outputfile
 		./encoder imputfile outputfile
+		
+	Part 3:
+		./encoder_loss ../sndfile-example-src/sample.wav dec_loss_sample 1024 809
+		./decoder_loss dec_loss_sample _decoded_loss_sample.wav
