@@ -2,84 +2,86 @@
 #include <vector>
 #include <sndfile.hh>
 #include <cmath>
+#include <limits>
 
 using namespace std;
 
-constexpr size_t FRAMES_BUFFER_SIZE = 65536; // Buffer for reading frames
+constexpr size_t FRAMES_BUFFER_SIZE = 65536;
 
 int main(int argc, char *argv[]) {
-
-	if(argc < 3) {
-		cerr << "Usage: " << argv[0] << " <input file1> <input file2>\\n";
-		return 1;
-	}
-
-	SndfileHandle sfhIn1 { argv[argc-2] };
-	if(sfhIn1.error()) {
-		cerr << "Error: invalid input file1\n";
-		return 1;
-    }
-
-    SndfileHandle sfhIn2 { argv[argc-1] };
-	if(sfhIn2.error()) {
-		cerr << "Error: invalid input file2\n";
-		return 1;
-    }
-
-    // Check file 1 format
-	if((sfhIn1.format() & SF_FORMAT_TYPEMASK) != SF_FORMAT_WAV) {
-		cerr << "Error: file1 is not in WAV format\n";
-		return 1;
-	}
-	if((sfhIn1.format() & SF_FORMAT_SUBMASK) != SF_FORMAT_PCM_16) {
-		cerr << "Error: file1 is not in PCM_16 format\n";
-		return 1;
-	}
-
-    // Check file 2 format
-    if((sfhIn2.format() & SF_FORMAT_TYPEMASK) != SF_FORMAT_WAV) {
-		cerr << "Error: file2 is not in WAV format\n";
-		return 1;
-	}
-
-	if((sfhIn2.format() & SF_FORMAT_SUBMASK) != SF_FORMAT_PCM_16) {
-		cerr << "Error: file2 is not in PCM_16 format\n";
-		return 1;
-	}
-
-    // Check if files have the same number of frames
-    if(sfhIn1.frames() != sfhIn2.frames()) {
-        cerr << "Error: files have different number of frames\n";
+    if (argc < 3) {
+        cerr << "Not enough arguments\n";
         return 1;
     }
 
-    vector<short> samples1(FRAMES_BUFFER_SIZE * sfhIn1.channels());
+    SndfileHandle sfhIn1{ argv[argc - 2] };
+    SndfileHandle sfhIn2{ argv[argc - 1] };
 
-    vector<short> samples2(FRAMES_BUFFER_SIZE * sfhIn2.channels());
-
-    size_t numberFrames;
-    double sinal { 0 };
-    double noise { 0 };
-    double error { 0 };
-    double snr { 0 };
-
-    while((numberFrames = sfhIn1.readf(samples1.data(), FRAMES_BUFFER_SIZE))) {
-        sfhIn2.readf(samples2.data(), FRAMES_BUFFER_SIZE);
-
-        samples1.resize(numberFrames * sfhIn1.channels());
-
-        samples2.resize(numberFrames * sfhIn2.channels());
-
-        for (long unsigned int i = 0; i < samples1.size(); i++) {
-            sinal += abs(samples1[i])^2;
-            noise += abs(samples1[i] - samples2[i])^2;
-            error = abs(samples1[i] - samples2[i]) > error ? abs(samples1[i] - samples2[i]) : error;
-        }    
+    if (sfhIn1.error() || sfhIn2.error()) {
+        cerr << "Invalid input\n";
+        return 1;
     }
 
-    snr = 10 * log10(sinal / noise);
+    if (sfhIn1.frames() != sfhIn2.frames()) {
+        cerr << "Invalid input\n";
+        return 1;
+    }
 
+    vector<short> samples_f1(FRAMES_BUFFER_SIZE * sfhIn1.channels());
+    vector<short> samples_f2(FRAMES_BUFFER_SIZE * sfhIn2.channels());
+
+    size_t nFrames;
+    double total_energy_signal = 0.0;
+    double total_energy_noise = 0.0;
+    double max_error = 0.0;
+    double snr = 0.0;
+    int channel_count = sfhIn1.channels(); 
+
+    vector<double> channel_errors(channel_count, 0.0);
+    vector<double> channel_max_errors(channel_count, 0.0);
+
+    while ((nFrames = sfhIn1.readf(samples_f1.data(), FRAMES_BUFFER_SIZE))) {
+        sfhIn2.readf(samples_f2.data(), FRAMES_BUFFER_SIZE);
+
+        samples_f1.resize(nFrames * sfhIn1.channels());
+        samples_f2.resize(nFrames * sfhIn2.channels());
+
+        for (long unsigned int i = 0; i < samples_f1.size(); i++) {
+            double signal_sample = static_cast<double>(samples_f1[i]);
+            double noise_sample = signal_sample - static_cast<double>(samples_f2[i]);
+
+            total_energy_signal += signal_sample * signal_sample;
+            total_energy_noise += noise_sample * noise_sample;
+
+            double abs_error = abs(noise_sample);
+            max_error = max(abs_error, max_error);
+
+            int channel_index = i % channel_count;
+            channel_errors[channel_index] += noise_sample * noise_sample;
+            channel_max_errors[channel_index] = max(abs_error, channel_max_errors[channel_index]);
+        }
+    }
+
+    snr = 10 * log10(total_energy_signal / total_energy_noise);
     cout << "SNR: " << snr << " dB" << endl;
 
-    cout << "Maximum Absolute Error: " << error << endl;
+    for (int i = 0; i < channel_count; i++) {
+        double channel_l2_norm = sqrt(channel_errors[i] / samples_f1.size());
+        cout << "Channel " << i + 1 << " - L2 Norm: " << channel_l2_norm << endl;
+        cout << "Channel " << i + 1 << " - Max Absolute Error (L∞ norm): " << channel_max_errors[i] << endl;
+    }
+
+    double average_l2_norm = 0.0;
+    double average_max_error = 0.0;
+
+    for (int i = 0; i < channel_count; i++) {
+        average_l2_norm += sqrt(channel_errors[i] / samples_f1.size());
+        average_max_error += channel_max_errors[i];
+    }
+
+    average_l2_norm /= channel_count;
+    average_max_error /= channel_count;
+
+    cout << "Average L2 Norm: " << average_l2_norm << endl;
+    cout << "Average Max Absolute Error (L∞ norm): " << average_max_error << endl;
 }
