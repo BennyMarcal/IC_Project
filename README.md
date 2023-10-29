@@ -1,7 +1,11 @@
 # IC - Project 1
 
-## To build
+# Authors and Contribuitions
+- Bernardo Marçal - 103236 - 33%
+- Ricardo Machado - 102737 - 33%
+- Rui Campos - 103709 - 33%
 
+## To build
 
 Go to IC_Project/sndfile-example-src and run :
 
@@ -12,15 +16,6 @@ make all
 
 Go to IC_Project/sndfile-example-bin
 
-<br>
-
-
-# Authors and Contribuitions
-Bernardo Marçal,103236 - 33%
-Ricardo Machado,102737 - 33%
-Rui Campos,103709 - 33%
-
-<br>
 
 ### Exercise 1
 
