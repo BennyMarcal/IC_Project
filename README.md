@@ -119,7 +119,7 @@ You can test other values
 
 **To encode**
 ```bash
-./encoder_loss ../sndfile-example-src/sample.wav encoded_sample 512 1000
+./encoder_loss ../sndfile-example-src/sample.wav encoded_sample 1024 820
 ```
 
 <br>
