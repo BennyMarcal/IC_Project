@@ -110,9 +110,4 @@ int main(int argc, char *argv[]) {
     }
 
     sfhOut.writef(samples_out.data(), samples_out.size() / sfhIn.channels());
-
-    clock_t end = clock();
-    double elapsed_secs = double(end - start) / CLOCKS_PER_SEC;
-    elapsed_secs = elapsed_secs * 1000;
-    cout << "Time: " << elapsed_secs << " ms" << endl;
 }

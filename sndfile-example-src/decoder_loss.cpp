@@ -10,10 +10,8 @@ using namespace std;
 int main (int argc, char *argv[])
 {
 
-    clock_t start = clock();
-
     if(argc < 3 || argc > 3 ){
-		cerr << "Usage: " << argv[0] << " <input file (binary)> <output file>\n";
+		cerr << "Not enough arguments \n";
 		return 1;
 	}
 
@@ -53,10 +51,9 @@ int main (int argc, char *argv[])
         nFrames += v_nFrames[i] * pow(2, v_nFrames.size() - i - 1);
     }
 
-
     SndfileHandle sfhOut { argv[argc-1], SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, nChannels, sampleRate };
 	if(sfhOut.error()) {
-		cerr << "Error: invalid output file\n";
+		cerr << "Invalid output file \n";
 		return 1;
     }
 
@@ -76,7 +73,6 @@ int main (int argc, char *argv[])
         for(int j = 31; j >= 0; j--) {
             reversed_temp.push_back(x_dct_bits[i+j]);
         }
-
         for(int j = 0; j < reversed_temp.size(); j++) {
             temp += reversed_temp[j] * pow(2, reversed_temp.size() - j - 1);
         }
@@ -99,7 +95,6 @@ int main (int argc, char *argv[])
     vector<short> samples(nChannels * nFrames);
     samples.resize(nBlocks * bs * nChannels);
     
-    // Inverse DCT
 	fftw_plan plan_i = fftw_plan_r2r_1d(bs, x.data(), x.data(), FFTW_REDFT01, FFTW_ESTIMATE);
 	for(size_t n = 0 ; n < nBlocks ; n++)
 		for(size_t c = 0 ; c < nChannels ; c++) {
@@ -115,11 +110,5 @@ int main (int argc, char *argv[])
     
     
     sfhOut.writef(samples.data(), nFrames);
-
-    clock_t end = clock();
-    double elapsed_secs = double(end - start) / CLOCKS_PER_SEC;
-    elapsed_secs = elapsed_secs * 1000;
-    cout << "Time: " << elapsed_secs << " ms" << endl;
-    return 0;
 
 }
