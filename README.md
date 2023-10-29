@@ -1,20 +1,130 @@
-# IC_Project
+# IC - Project 1
 
-## To build:
-	make
-	make all
+## To build
 
-## To test:
 
-	Part 1:
-		../sndfile-example-bin/wav_cp sample.wav copy.wav // copies "sample.wav" into "copy.wav"
-		../sndfile-example-bin/wav_hist sample.wav 0 // outputs the histogram of channel 0 (left)
-		../sndfile-example-bin/wav_dct sample.wav out.wav // generates a DCT "compressed" version
-	
-	Part 2:
-		./decoder imputfile outputfile
-		./encoder imputfile outputfile
-		
-	Part 3:
-		./encoder_loss ../sndfile-example-src/sample.wav dec_loss_sample 1024 809
-		./decoder_loss dec_loss_sample _decoded_loss_sample.wav
+Go to IC_Project/sndfile-example-src and run :
+
+```bash
+make all
+``` 
+## To test
+
+Go to IC_Project/sndfile-example-bin
+
+<br>
+
+
+# Authors and Contribuitions
+Bernardo Marçal,103236 - 33%
+Ricardo Machado,102737 - 33%
+Rui Campos,103709 - 33%
+
+<br>
+
+### Exercise 1
+
+**To create the file**
+ 
+```bash
+./wav_hist ../sndfile-example-src/sample.wav 0 > left
+``` 
+You can also use this to test other channels:
+
+```bash
+../sndfile-example-src/sample.wav 1 > right
+../sndfile-example-src/sample.wav mid > mid
+../sndfile-example-src/sample.wav side > side
+``` 
+
+**To open gnuplot**
+
+```bash
+gnuplot
+```
+
+**To make the graphic**
+
+```bash
+plot "left" with boxes
+```
+
+You can also use this to check the other graphics:
+
+```bash
+plot "right" with boxes
+plot "mid" with boxes
+plot "side" with boxes
+``` 
+<br>
+
+
+### Exercise 2
+
+```bash
+./wav_cmp ../sndfile-example-src/sample.wav sample_cmp.wav
+```
+
+### Exercise 3
+
+```bash
+./wav_quant ../sndfile-example-src/sample.wav 2 sample_quant.wav
+```
+
+<br>
+
+### Exercise 4
+
+**Single Echo**
+```bash
+./wav_effects ../sndfile-example-src/sample.wav  single_echo.wav single_echo 4 40000
+```
+You can test other values
+
+<br>
+
+**Multiple Echos**
+```bash
+./wav_effects ../sndfile-example-src/sample.wav multiple_echo.wav multiple_echo 1 40000
+```
+You can test other values
+
+<br>
+
+**Amplitude Modulation**
+```bash
+./wav_effects ../sndfile-example-src/sample.wav amp_mod.wav amplitude_modulation 3
+``` 
+You can test other values
+
+<br>
+
+### Exercise 6
+
+**To encode**
+```bash
+./encoder texto.txt texto_encoded.txt
+```
+
+**To decode**
+```bash
+./decoder texto_encoded.txt texto_decoded.txt
+```
+
+<br>
+
+
+
+### Exercise 7
+
+**To encode**
+```bash
+./encoder_loss ../sndfile-example-src/sample.wav encoded_sample 512 1000
+```
+
+<br>
+
+**To decode**
+```bash
+./decoder_loss encoded_sample decoded_sample.wav
+```
